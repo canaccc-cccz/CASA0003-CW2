@@ -1,0 +1,12 @@
+type	year	count
+Biomass	2008	0.296
+Coal	2008	34.067
+Oil	2008	6.128
+Gas	2008	35.265
+Hydro	2008	1.768
+Wave	2008	2.697
+Nuclear	2008	10.72
+Solar	2008	0.001
+Storage	2008	3.482
+Waste	2008	1.669
+Wind	2008	3.909
