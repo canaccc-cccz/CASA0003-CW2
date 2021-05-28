@@ -1,0 +1,86 @@
+.domain {
+    display: none;
+}
+
+.tick line {
+    stroke: #C0C0BB;
+}
+
+.tick text {
+    fill: slategray;
+    font-size: 20pt;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.timer {
+    fill: slategray;
+    font-size: 40pt;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.value {
+    fill: rgb(138, 46, 46);
+    font-size: 20pt;
+    font-weight: 400;
+}
+
+.barInfo {
+    fill: rgb(255, 255, 255);
+    font-size: 16pt;
+    font-weight: 800;
+}
+
+.G {
+    fill: brown;
+    opacity: 0.8;
+}
+
+.H {
+    fill: cornflowerblue;
+    opacity: 0.8;
+}
+
+.I {
+    fill: teal;
+    opacity: 0.8;
+}
+
+.J {
+    fill: aquamarine;
+    opacity: 0.8;
+}
+
+.K {
+    fill: antiquewhite;
+    opacity: 0.8;
+}
+
+.F {
+    fill: darkgreen;
+    opacity: 0.8;
+}
+
+.E {
+    fill: tan;
+    opacity: 0.8;
+}
+
+.D {
+    fill: tomato;
+    opacity: 0.8;
+}
+
+.C {
+    fill: darkblue;
+    opacity: 0.8;
+}
+
+.B {
+    fill: darkred;
+    opacity: 0.8;
+}
+
+.A {
+    fill: steelblue;
+    opacity: 0.8;
+}

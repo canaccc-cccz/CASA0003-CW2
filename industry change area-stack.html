@@ -1,0 +1,219 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=area-stack
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="height: 700PX;margin: 0">
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 40%;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .map-overlay .map-overlay-inner {
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <div class='map-overlay top'>
+        <div class='map-overlay-inner'>
+            <h2 style="font-family: 'Times New Roman', Times, serif;">Change of each industry proportion</h2>
+        </div>
+    </div>
+
+    <div id="container" style="width: 1000px;height: 500px; left: 10px; top: 75px"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-nightly@5.1.2-dev.20210512/dist/echarts.min.js"></script>
+    <!-- Uncomment this line if you want to dataTool extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-nightly@5.1.2-dev.20210512/dist/extension/dataTool.min.js"></script>
+        -->
+    <!-- Uncomment this line if you want to use gl extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+        -->
+    <!-- Uncomment this line if you want to echarts-stat extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+        -->
+    <!-- Uncomment this line if you want to use map
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-nightly@5.1.2-dev.20210512/map/js/china.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-nightly@5.1.2-dev.20210512/map/js/world.js"></script>
+        -->
+    <!-- Uncomment these two lines if you want to use bmap extension
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-nightly@5.1.2-dev.20210512/dist/extension/bmap.min.js"></script>
+        -->
+
+    <script type="text/javascript">
+        var dom = document.getElementById("container");
+        var myChart = echarts.init(dom);
+        var app = {};
+
+        var option;
+
+
+
+        option = {
+
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: ['Miscellaneous services', 'Professional scientific and technical services', 'Public Administration and Defence', 'Insurance, banking and finance', 'Retail and wholesale distribution', 'Transport, storage information and communication', 'Construction', 'Manufacturing', 'Primary Sectors']
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                data: ['prop1920_1938', 'prop1948_1959', 'prop1960_1979', 'prop1980_1999', 'prop2000_2016']
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                name: 'Miscellaneous services',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [14.42, 9.94, 10.86, 16.59, 21.23]
+            }, {
+                name: 'Professional scientific and technical services',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [5.93, 8.89, 13.84, 21.42, 27.21]
+            }, {
+                name: 'Public Administration and Defence',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [5.36, 8.98, 7.42, 6.54, 5.25]
+            }, {
+                name: 'Transport, storage information and communication',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [11.07, 10.12, 8.64, 7.71, 8.59]
+            }, {
+                name: 'Construction',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [6.37, 7.75, 7.91, 6.97, 6.72]
+            }, {
+                name: 'Manufacturing',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [25.3, 29.04, 27.78, 17.38, 9.45]
+            }, {
+                name: 'Insurance, banking and finance',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [1.73, 1.66, 2.45, 3.76, 3.63]
+            }, {
+                name: 'Primary Sectors',
+                type: 'line',
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [12.58, 7.88, 4.54, 2.44, 1.42]
+            }, {
+                name: 'Retail and wholesale distribution',
+                type: 'line',
+
+                label: {
+                    show: true,
+                    position: 'top'
+                },
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [15.9, 13.96, 14.85, 15.97, 15.64]
+            }]
+        };
+
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+    </script>
+</body>
+
+</html>

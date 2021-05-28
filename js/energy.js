@@ -1,0 +1,264 @@
+
+let marge = {top: 40, right: 60, bottom: 60, left: 0};
+var width = 1280,
+    height = 800,
+    radius = Math.min(width, height) / 3;
+var outerArcR = 1.3 * radius;
+var currentYear = "";
+var color = d3.scaleOrdinal([
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#4d004b",
+    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+    "#f7fcfd", "#e0ecf4", "#bfd3e6", "#9ebcda", "#8c96c6",
+    "#8c6bb1", "#88419d", "#810f7c"]);
+var polylineW = 90;
+var outerRadius = radius;
+var legendW = 50;
+var countSum = 0;
+
+var pie = d3.pie()
+    .value(function(d){
+        return d.count;
+    })
+    .sort(null);
+
+var arc = d3.arc()
+    .innerRadius(radius - 100)
+    .outerRadius(radius);
+
+var arcLabel = d3.arc()
+    .innerRadius(radius * 0.8)
+    .outerRadius(radius * 0.8);
+var outerArc = d3.arc()
+    .innerRadius(outerArcR)
+    .outerRadius(outerArcR);
+var oArc = d3.arc()
+    .innerRadius(radius)
+    .outerRadius(radius);
+
+var svg = d3.select("#energy").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var path = svg.selectAll("path");
+
+// 定义弹出提示框，鼠标mouseover时用于显示相关消息
+var tooltip = d3.select('#energy')
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0.0);
+
+// 生成弹出提示框的内容
+function tooltipContent(list, title){
+    var tpl = "<div style='margin-top:5px;'><span>";
+    tpl += "{name}: </span>{value}</div>";
+    var html = "<div style='padding-left:20px;padding-right: 20px;padding-bottom:10px;font-size:12px;'>";
+    html += "<h2>" + title + "</h2>";
+    list.forEach(function(dataItem){
+        name = dataItem.name, value = dataItem.value;
+        html += tpl.replace("{name}", name).replace("{value}", value);
+    });
+    html += "</div>";
+    return html;
+}
+
+let data = d3.csv("2008_2018.csv",function(data){
+    console.log(data);
+    data.forEach(function(item){
+        item.count = item.count * 1;        // 将count由string类型转换成number类型
+        item.itemCount = item.count;        // 记录真实的count数据
+        item.count += 3;                    // 通过增加一定的基数来调节饼图块的占比，这样可以防止某些饼图块太小而导致文字重叠
+    });
+
+    var typeByYear = d3.nest()
+        .key(function(d){
+            return d.year;
+        })
+        .entries(data);
+    currentYear = typeByYear[0].key;
+
+    var label = d3.select("form")
+        .selectAll("label")
+        .data(typeByYear)
+        .enter().append("label");
+
+    label.append("input")
+        .attr("type", "radio")
+        .attr("name", "year")
+        .attr("value", function(d){
+            return d.key;
+        })
+        .on("change", change)
+        .filter(function(d, i){
+            return !i;
+        })
+        .each(change)
+        .property("checked", true);
+
+    label.append("span")
+        .text(function(d){
+            return d.key;
+        });
+
+
+});
+
+function change(type){
+    type.values.sort(function(a, b){
+        return b.itemCount - a.itemCount;
+    });
+    var countSum = d3.sum(type.values, d => d.itemCount);
+
+    var pieData = pie(type.values);
+
+    svg.selectAll(".pie-path")
+        .data(pieData)
+        .enter().append("path")
+        .attr("class", "pie-path");
+    svg.selectAll("path")
+        .attr("fill", function(d){
+            return color(d.data.type);
+        })
+        .attr("d", arc)
+        .on("mouseover", mouseover)
+        .on("mousemove", mouseover)
+        .on("mouseout", mouseout)
+    ;
+
+    svg.selectAll(".outer-label")
+        .data(pieData)
+        .enter().append('text')
+        .attr("class", (d, i) => "outer-label outer-label-" + i)
+        .attr('dy', '0.35em')
+        .attr('fill', function(d, i){
+            return "#222";
+        });
+    svg.selectAll(".outer-label")
+        .style('text-anchor', function(d, i){
+            return midAngel(d) < Math.PI ? 'start' : 'end';
+        })
+        .attr('transform', function(d, i){
+            var posB = outerArc.centroid(d);
+            var posC = outerArc.centroid(d);
+            if (midAngel(d) >= Math.PI) {
+                posC[0] = posB[0] - polylineW;
+            } else {
+                posC[0] = posB[0] + polylineW;
+            }
+            return 'translate(' + posC + ')';
+        })
+        .style('opacity', 1)
+        .text(d => {
+            var result = `${(d.data.itemCount / countSum * 100).toFixed(4) + '%'}`;
+            return result;
+        });
+
+
+    svg.selectAll('polyline')
+        .data(pieData)
+        .enter().append('polyline')
+        .attr("class", (d, i) => "pie-polyline pie-polyline-" + i);
+    svg.selectAll('polyline')
+        .attr('points', function(d){
+            return [arc.centroid(d), arc.centroid(d), arc.centroid(d)];
+        })
+        .attr('points', function(d, i){
+            var posA = oArc.centroid(d);
+            var posB = outerArc.centroid(d);
+            var posC = outerArc.centroid(d);
+            if (midAngel(d) >= Math.PI) {
+                posC[0] = posB[0] - polylineW;
+            } else {
+                posC[0] = posB[0] + polylineW;
+            }
+            return [posA, posB, posC];
+        });
+
+
+    // 添加图例图形
+    svg.selectAll("rect")
+        .data(pieData)
+        .enter().append('rect');
+    svg.selectAll("rect")
+        .style('fill', function(d, i){
+            return color(d.data.type);
+        })
+        .attr('x', width / 2 - 100)
+        .attr("y", function(d, i){
+            return -(height - outerRadius) / 2 + (i - 1) * 30;
+        })
+        .attr('rx', '10')     //rx=ry 会出现圆角
+        .attr('ry', '10')
+        .attr('width', legendW)
+        .attr('height', 20);
+
+    // 添加图例文字
+    svg.selectAll('.legend-text')            //标签中的文字
+        .data(pieData)
+        .enter().append("text")
+        .attr("class", "legend-text");
+    svg.selectAll('.legend-text')
+        .attr('x', function(d, i){
+            return width / 2 - 100 + legendW + 8;              //因为rect宽度是50，所以把文字偏移15,在后面再将文字设置居中
+        })
+        .attr("y", function(d, i){
+            return -(height - outerRadius) / 2 + 15 + (i - 1) * 30;
+        })
+        .text(function(d){
+            return d.data.type;
+        })
+        .style({
+            "font-size": "10px",
+            "text-anchor": "middle",
+            'fill': "white",
+            "font-weight": 600
+        });
+}
+
+function mouseover(d, i){
+    // 生成信息框消息内容
+    var strhtml = tooltipContent([
+        {name: "Count", value: d.data.count}
+    ], d.data.type);
+
+    // 弹出信息框
+    var left = -width / 3.4 + d3.event.pageX + 10;
+    var top = d3.event.pageY - 100;
+    tooltip.html(strhtml)
+        .style("width", "auto")
+        .style("height", "auto")
+        .style("left", left + "px")
+        .style("top", top + "px")
+        .style("opacity", 1.0)
+    ;
+
+    //------------------ 实现高亮的效果 ---------------------
+    // 将图形的透明度都调小一点
+    d3.selectAll(".pie-path,.outer-label").style("opacity", 0.4);
+    d3.selectAll(".pie-polyline").style("stroke-opacity", 0.4);
+
+    // 将当前相关的图形的透明调成1
+    d3.select(this).style("opacity", 1);
+    d3.select(".outer-label-" + i).style("opacity", 1);
+    d3.select(".pie-polyline-" + i).style("opacity", 1);
+}
+
+function mouseout(){
+    // 隐藏信息框
+    tooltip.html("");
+    tooltip.style("width", 0)
+        .style("height", 0)
+        .style("opacity", 0.0);
+    d3.selectAll(".pie-path,.outer-label").style("opacity", 1);
+    d3.selectAll(".pie-polyline").style("stroke-opacity", 1);
+}
+
+function midAngel(d){
+    return d.startAngle + (d.endAngle - d.startAngle) / 2;
+}
+
+function type(d){
+    d.count = +d.count;
+    return d;
+}

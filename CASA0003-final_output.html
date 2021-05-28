@@ -1,0 +1,238 @@
+<html lang="en">
+
+<head>
+    <style>
+        /*body {*/
+        /*    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+        /*    margin: auto;*/
+        /*    position: relative;*/
+        /*    width: 960px;*/
+        /*}*/
+        
+        text {
+            font: 10px sans-serif;
+        }
+        
+        form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        
+        input {
+            margin: 0 7px;
+        }
+        
+        polyline {
+            fill: none;
+            stroke: #999;
+            stroke-width: 2px;
+        }
+        
+        .tooltip {
+            font: bold 25px Verdana;
+            /*font-family: simsun;*/
+            font-size: 12px;
+            width: 120px;
+            height: auto;
+            color: #555;
+            position: absolute;
+            text-align: left;
+            border-style: solid;
+            border-width: 2px;
+            background-color: white;
+            border-radius: 5px;
+        }
+    </style>
+    <title>UK</title>
+    <script charset="utf-8" src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <script src="js/layui/layui.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <link href="css/cover.css" rel="stylesheet">
+</head>
+
+<body class="d-flex text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <main class="px-3">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">Welcome</li>
+                    <li>Population</li>
+                    <li>Industry</li>
+                    <li>Employment</li>
+                    <li>Electricity Supply</li>
+                    <li>Energy Map</li>
+                    <li>Air Quality</li>
+
+                </ul>
+
+                <div class="layui-tab-content">
+                    <!-- Welcome -->
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-row">
+
+
+                            <div class="layui-col-md5">
+                                <p style="font-family: 'Times New Roman';font-size: 20;">Industry evolution for the last decade.</p2>
+
+                                    <p style="font-family: 'Times New Roman';font-size: 15;margin-top: 30px;">Things have changed over the last 100 years, the industry of the UK also experienced an evolution. In this project, we will start with the population, the change of the proportion of each industry, the energy categories
+                                        and air qualities to discuss the impact of this evolution.</p>
+                            </div>
+                            <div class="flourish-embed flourish-photo-slider layui-col-md7" data-src="visualisation/6165385">
+                                <script src="https://public.flourish.studio/resources/embed.js"></script>
+                            </div>
+                        </div>
+                        <div class="layui-row" style="margin-top: 100px;">
+                            <p style="font-family: 'Times New Roman';font-size: 12; color: rgb(175, 167, 167);margin-top: 30px;">
+                                This website is optimised for desktop browser access. It will not display correctly on mobile devices.
+                            </p>
+                            <p style="font-family: 'Times New Roman';font-size: 12; color: rgb(175, 167, 167);margin-top: 30px;">
+                                CASA Digital Visualisation 2020-21 Group 19: Bokun Kong, Ruofan Wang, Yiyi Ju, Ziyi Chen
+                            </p>
+                            <p style="font-family: 'Times New Roman';font-size: 12; color: rgb(175, 167, 167);margin-top: 30px;">
+                                Data Source: Historic Census Population Data, London Datastore - https://data.london.gov.uk/dataset/historic-census-population, Nomis - Official Labour Market Statistics (nomisweb.co.uk
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Population -->
+                    <div class="layui-tab-item">
+                        <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/6167352">
+                            <script src="https://public.flourish.studio/resources/embed.js"></script>
+                        </div>
+                        <div class="layui-panel" style="margin-top: 30px;">
+                            <p style="padding: 30px;font-family: 'Times New Roman';">
+                                The population for all local authorities is slowly increasing from the last decade. Yet the increase is constant and small. Which means that there is no burst increase of the working force to develop traditional manufacturing industry. For further development
+                                of economy, optimization of industrial structure is required, hence, let us move on to the next page for more details about the change of each industry.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Industry -->
+                    <div class="layui-tab-item">
+                        <!-- <style>
+                            #chartContainer {
+                                width: 840px;
+                                margin: auto;
+                                margin-top: 50px;
+                            }
+                            
+                            #chartContainer p {
+                                margin-left: 60px;
+                                margin-bottom: 5px;
+                                margin-top: 0;
+                                padding: 0;
+                            }
+                            
+                            #charttitle {
+                                font: bold 22px Verdana, sans-serif;
+                            }
+                        </style>
+                        <div id="chartContainer" style="width: 1280px;height: 800px;margin-left: -50px">
+                            <script charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/dimple/2.3.0/dimple.latest.min.js"></script>
+                            <p id="chartsubhead">Proportion for different industry across the UK.</p>
+                            <p><select id="IndustryMenu">
+                            <option>Change Industry Here:</option>
+                        </select></p> -->
+                        <!-- This is the drop down menu to select different cities-->
+                        <!-- <script src="js/22.js"></script>
+                        </div> -->
+                        <div id="Industry">
+                            <iframe src="industry change area-stack.html" style="width: 1200px;height: 700px;margin-left: -200px">
+                        </iframe>
+
+                        </div>
+                        <div class="layui-panel" style="margin-top: -100px;">
+                            <p style="padding: 30px;font-family: 'Times New Roman';">
+                                From 1920 to 2000, there are three industries experienced significant changes. Miscellaneous services industry and professional scientific and technical services industry both have significant development which have increased from 14.42% to 21.23% and
+                                5.93% to 27.21% respectively. However, Manufacturing industry has shrunk extremely from 25.3% to 9.45% over these 80 years. For the other industries, there is no significant changes.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Employment -->
+                    <div class="layui-tab-item">
+                        <div id="employment_map">
+                            <iframe src="employment.html" style="width: 1280px;height: 800px;margin-left: -300px">
+                        </iframe>
+
+                        </div>
+                    </div>
+                    <!-- Energy -->
+                    <div class="layui-tab-item">
+
+                        <div id="energy" style="width: 1280px;height: 400px;margin-left: -300px">
+                            <div>
+                                <form></form>
+                            </div>
+
+                            <iframe src="Energy_type_2008_2018.html" style="width: 1280px;height: 800px;">
+                            </iframe>
+
+                        </div>
+
+                    </div>
+                    <!-- Energy map -->
+                    <div class="layui-tab-item">
+                        <div id="energy_map">
+                            <iframe src="energy.html" style="width: 1280px;height: 800px;margin-left: -300px">
+        </iframe>
+
+                        </div>
+                    </div>
+
+                    <!-- Air_quality -->
+                    <div class="layui-tab-item">
+                        <div id="air_quality">
+                            <!-- <script src="js/jquery-3.2.1.slim.min.js"></script>
+                        <script src="js/data.js"></script>
+                        <script src="js/config.js"></script>
+                        <script src="js/visual.js"></script>
+                        <link rel="stylesheet" href="css/stylesheet.css"> -->
+                            <iframe src="line-stack_air_quality.html" style="width: 1280px;height: 800px;margin-left: -200px"></iframe>
+                            <!--                        <div class="control-group">-->
+                            <!--                            <button onclick="changeflag()">restart</button>-->
+                            <!--                        </div>-->
+                        </div>
+                        <div class="layui-panel" style="margin-top: -250px;">
+                            <p style="padding: 30px;font-family: 'Times New Roman';">
+                                It is clear that all pollutants’ concentrations are in the ‘low’ status, which means the average air quality for each year is relatively good. And to analyze the general trend of concentration variation through year, it is distinct that the concentrations
+                                of nitrogen dioxide, PM2.5 and PM10 are gradually decreasing, which represents that the air quality is increasing from 1992 to 2020.
+
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+
+</body>
+<script>
+    //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function() {
+        var element = layui.element;
+
+
+    });
+</script>
+
+</html>

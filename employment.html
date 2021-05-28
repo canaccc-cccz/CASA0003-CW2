@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employment Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css" rel="stylesheet" />#
+    <script charset="utf-8" src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; };
+
+    </style>
+</head>
+
+
+<body>
+    <style>
+        
+        /* FLY MAP BUTTONS */
+
+		#flyin {
+			font: Helvetica;
+			font-size: 14px;
+			display: block;
+			position: relative;
+			margin: 0px auto;
+			width: 40%;
+			height: 40px;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 3px;
+			text-align: center;
+			color: #c7c7c7;
+			background: #282828;
+		}
+
+		#flyout {
+			font: Helvetica;
+			font-size: 14px;
+			position: relative;
+			margin: 0px auto;
+			width: 40%;
+            left: 385px;
+			height: 40px;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 3px;
+			text-align: center;
+			color: #c7c7c7;
+			background: #282828;
+			
+		}
+        
+        .map-overlay {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        position: absolute;
+        width: 20%;
+        top: 0;
+        left: 0;
+        padding: 10px;
+        border-radius: 5px;
+        
+        }
+
+        .map-overlay .map-overlay-inner {
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+        border-radius: 3px;
+        padding: 10px;
+        margin-bottom: 5px;
+        background: #c9c9c9;
+        }
+
+        .map-overlay .map-overlay-inner2 {
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+        width: 30%;
+        border-radius: 3px;
+        padding: 10px;
+        margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .map-overlay h2 {
+        line-height: 24px;
+        display: block;
+        margin: 0 0 10px;
+        }
+
+        .map-overlay .legend .bar {
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(to right, #fca107, #7f3121);
+        }
+
+        .map-overlay input {
+        background-color: transparent;
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        margin: 0;
+        cursor: ew-resize;
+        }
+
+        .colour-key {
+          width: 10px;
+          height: 10px;
+          -webkit-border-radius: 25px;
+          -moz-border-radius: 25px;
+          border-radius: 25px;
+          display: inline-block;
+          margin-right: 3px;
+        }
+
+      #features {
+        top: 0;
+        height: 100px;
+        margin-top: 20px;
+        width: 100px;
+      }
+
+      #list-group {
+          padding: 0px;
+          list-style: none;
+        }
+        
+ 
+ 
+        #legend {
+            padding: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 18px;
+            height: 150px;
+            margin-bottom: 40px;
+            width: 10px;
+        }
+
+        .legend-key {
+            display: inline-block;
+            border-radius: 20%;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+        }   
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+    </style>
+    
+    
+    <div id="map"></div>
+    
+    <!--FLY MAP BUTTONS--> 
+	<button id='flyin'>Zoom to London Borough</button>
+	<button id='flyout'>Zoom to England</button>
+    
+    <div class='map-overlay top'>
+
+        <div class='map-overlay-inner'>
+            <h1>Emplotment in London Boroughs and UK regions</h1>
+             <p class="credit">Data: <a href="https://data.london.gov.uk/dataset/workplace-employment-industry-borough">Workplace employment industry.</a></p>
+            <p>Click for detail information.</p>
+        </div>
+
+      
+        <div class='map-overlay-inner2'>   
+            <ul id="list-group">
+
+                Types:
+                <li class="list-group-item">
+                    <div class="colour-key" style="background-color: #A7B734;"></div>
+                    Increase
+                </li>
+                <li class="list-group-item">
+                    <div class="colour-key" style="background-color: #43CFEF;"></div>
+                    Decrease
+                </li>
+            </ul>
+        </div>
+    </div>    
+
+
+    <script>
+ 
+        var color = ['rgb(167,183,52)','rgb(67,207,239)']
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWl5aTA5OTgiLCJhIjoiY2trZmVpZzhnMWFlNjJvcGE0d3NtejBnMCJ9.pdcPU2VyvVeSwU-MogeRUg';
+  
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/yiyi0998/ckotgnq8w0kf617ry4r9r7vnj', // Using the standard Mapbox Light style  
+            center: [-0.1, 52.5], // starting position [lng, lat]
+            zoom: 5.5 // starting zoom
+        });
+
+        map.on('load', function() {   
+
+            // Add a layer showing the state polygons.
+
+            map.addLayer({
+                'id': 'uk',
+                'type': 'fill',
+                'source': {
+                    type:'vector',
+                    url:'mapbox://yiyi0998.6vpctgpp'
+                },
+                'source-layer':'EnergyEmployment',
+                'layout':{
+                    'visibility':'visible'
+                },
+                
+                'paint': {
+                    'fill-color': [
+                        'match',
+                        ['get', 'Change'],
+                        0, "rgba(67,207,239,0.5)",
+                        [1], "rgba(167,183,52,0.4)","#000000"
+                       
+                    ],
+                }
+            });
+
+            map.addLayer({
+                'id': 'london',
+                'type': 'fill',
+                'source': {
+                    type:'vector',
+                    url:'mapbox://yiyi0998.0m2uv5az'
+                },
+                'source-layer':'erg-cbt5qp',
+                'layout':{
+                    'visibility':'none'
+                },
+                
+                 'paint': {
+                    'fill-color': [
+                        'match',
+                        ['get', 'change'],
+                        0, "rgba(67,207,239,0.5)",
+                        [1], "rgba(167,183,52,0.4)","#000000"
+                       
+                    ],
+                }
+            });
+            
+            
+            
+            document.getElementById('flyin').addEventListener('click', function () {
+            // Fly to a random location by offsetting the point -0.14, 51.51
+                // by up to 5 degrees.
+                map.flyTo({
+                    center: [-0.14, 51.51],
+                    zoom: 9,
+                    bearing: 0
+                });
+                map.setLayoutProperty('uk', 'visibility', 'none');
+                map.setLayoutProperty('london', 'visibility', 'visible');
+                
+                
+                map.on('click', 'london', function (e) {
+                new mapboxgl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML("<h3>"+e.features[0].properties.name +  "</h3>Employment in 1999: "+e.features[0].properties.Em1999 +"<br />Employment in 2008:"+e.features[0].properties.Em2008)
+                .addTo(map);
+                });
+
+            // Change the cursor to a pointer when the mouse is over the states layer.
+                map.on('mouseenter', 'london', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+            // Change it back to a pointer when it leaves.
+                map.on('mouseleave', 'london', function () {
+                    map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+            });
+
+            document.getElementById('flyout').addEventListener('click', function () {
+                // Fly to a random location by offsetting the point -2.54, 53.03
+                // by up to 5 degrees.
+                map.flyTo({
+                    center: [-2.54, 53.03],
+                    zoom: 5.3,
+                    bearing: 0
+                });
+                map.setLayoutProperty('uk', 'visibility', 'visible');
+                map.setLayoutProperty('london', 'visibility', 'none');
+                
+                map.on('click', 'uk', function (e) {
+                new mapboxgl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML("<h3>"+e.features[0].properties.rgn17nm +  "</h3>Employment in 1999: "+e.features[0].properties.Em1999 +"<br />Employment in 2008:"+e.features[0].properties.Em2008)
+                .addTo(map);
+                });
+
+            // Change the cursor to a pointer when the mouse is over the states layer.
+                map.on('mouseenter', 'uk', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+            // Change it back to a pointer when it leaves.
+                map.on('mouseleave', 'uk', function () {
+                    map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+            });
+            
+            
+            map.on('click', 'uk', function (e) {
+                new mapboxgl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML("<h3>"+e.features[0].properties.rgn17nm +  "</h3>Employment in 1999: "+e.features[0].properties.Em1999 +"<br />Employment in 2008:"+e.features[0].properties.Em2008)
+                .addTo(map);
+                });
+
+        // Change the cursor to a pointer when the mouse is over the states layer.
+            map.on('mouseenter', 'uk', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+        // Change it back to a pointer when it leaves.
+            map.on('mouseleave', 'uk', function () {
+                map.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+            
+   
+        });
+
+    </script>
+
+</body>
+</html>
